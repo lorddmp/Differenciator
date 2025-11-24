@@ -65,7 +65,6 @@ struct Node_t {
 };
 
 struct tree_t{
-    int num_oper;
     int num_var;
     Node_t* root_node;
     hash* hash_table;

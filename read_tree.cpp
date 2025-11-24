@@ -8,12 +8,28 @@
 #include <string.h>
 #include <assert.h>
 
-#define ELSE_IF_OPER_OR_VAR_CHECK                                                                           \
-else if ((result = Operation_checking(tree, massive_op, node, position, massive)) == 1);                    \
-else if ((result = Operation_checking(tree, massive_op, node, position, massive)) == -1) return NULL;       \
+#define ELSE_IF_OPER_OR_VAR_CHECK                                                               \
+else if ((result = Operation_checking(node, position, massive)) == 1);                    \
+else if ((result = Operation_checking(node, position, massive)) == -1) return NULL;       \
 else if (Var_Checking(tree, node, position, massive))                                                       
 
-Node_t* Read_Tree(tree_t* tree, oper_t* massive_op)
+oper_t massive_op[NUM_OPER] = {
+        {"-", SUB_CODE, 1},
+        {"+", ADD_CODE, 1},
+        {"*", MUL_CODE, 1},
+        {"/", DIV_CODE, 1},
+        {"^", STEPEN_CODE, 1},
+        {"sin", SIN_CODE, 3},
+        {"cos", COS_CODE, 3},
+        {"tan", TAN_CODE, 3},
+        {"cotan", COTAN_CODE, 5},
+        {"arcsin", ARCSIN_CODE, 6},
+        {"arccos", ARCCOS_CODE, 6},
+        {"arctan", ARCTAN_CODE, 6},
+        {"arccotan", ARCCOTAN_CODE, 6},
+    };
+
+Node_t* Read_Tree(tree_t* tree)
 { 
     printf("Please write number of variables: \n");
     scanf("%d", &tree->num_var);
@@ -47,7 +63,7 @@ Node_t* Read_Tree(tree_t* tree, oper_t* massive_op)
 
     fread(massive, sizeof(char), (size_t)stat1.st_size, fp);
 
-    Node_t* node = Read_Node(tree, massive_op, &position, massive);
+    Node_t* node = Read_Node(tree, &position, massive);
     IF_ERROR(node);
 
     free(massive);
@@ -56,13 +72,13 @@ Node_t* Read_Tree(tree_t* tree, oper_t* massive_op)
     return(node);
 }
 
-Node_t* Read_Node(tree_t* tree, oper_t* massive_op, int* position, char* massive)
+Node_t* Read_Node(tree_t* tree, int* position, char* massive)
 {
     Skip_Spaces(position, massive);
 
     if (massive[*position] == '(')
     {
-        Node_t* node = Obrabotka_Node(tree, massive_op, position, massive);
+        Node_t* node = Obrabotka_Node(tree, position, massive);
         IF_ERROR(node);
         return node;
     }
@@ -79,7 +95,7 @@ Node_t* Read_Node(tree_t* tree, oper_t* massive_op, int* position, char* massive
     }
 }
 
-Node_t* Obrabotka_Node(tree_t* tree, oper_t* massive_op, int* position, char* massive)
+Node_t* Obrabotka_Node(tree_t* tree, int* position, char* massive)
 {
     Node_t* node = Make_Node();
     IF_ERROR(node);
@@ -87,12 +103,12 @@ Node_t* Obrabotka_Node(tree_t* tree, oper_t* massive_op, int* position, char* ma
     (*position)++;
     Skip_Spaces(position, massive);
 
-    node = Spot_Type(tree, massive_op, node, position, massive);
+    node = Spot_Type(tree, node, position, massive);
     IF_ERROR(node);
 
-    if((node->left = Read_Node(tree, massive_op, position, massive)) != NULL)
+    if((node->left = Read_Node(tree, position, massive)) != NULL)
         node->left->parent = node;
-    if((node->right = Read_Node(tree, massive_op, position, massive)) != NULL)
+    if((node->right = Read_Node(tree, position, massive)) != NULL)
         node->right->parent = node;
     Skip_Spaces(position, massive);
 
@@ -100,7 +116,7 @@ Node_t* Obrabotka_Node(tree_t* tree, oper_t* massive_op, int* position, char* ma
     return node;
 }
 
-Node_t* Spot_Type(tree_t* tree, oper_t* massive_op, Node_t* node, int* position, char* massive)
+Node_t* Spot_Type(tree_t* tree, Node_t* node, int* position, char* massive)
 {
     int num = 0, result = 0;
     double new_value_value = 0;
@@ -118,9 +134,9 @@ Node_t* Spot_Type(tree_t* tree, oper_t* massive_op, Node_t* node, int* position,
     return node;
 }
 
-int Operation_checking(tree_t* tree, oper_t* massive_op, Node_t* node, int* position, char* massive)
+int Operation_checking(Node_t* node, int* position, char* massive)
 {
-    for (int i = 0; i < tree->num_oper; i++)
+    for (int i = 0; i < NUM_OPER; i++)
     {
         if (strncmp(&massive[*position], massive_op[i].op_symb, (size_t)massive_op[i].len) == 0)
         {

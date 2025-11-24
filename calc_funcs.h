@@ -1,11 +1,6 @@
-#ifndef CALCULATOR
-#define CALCULATOR
-
-double Calculator(tree_t* tree, errors* err);
-
-void Get_Var_Values(tree_t* tree);
-
-double Proc_Calculating(tree_t* tree, Node_t* node, errors* err);
+#ifndef CALC_FUNCS
+#define CALC_FUNCS
+#include "structs_defines_types.h"
 
 double ADD_CASE(tree_t* tree, Node_t* node, errors* err);
 double SUB_CASE(tree_t* tree, Node_t* node, errors* err);
@@ -20,7 +15,5 @@ double ARCSIN_CASE(tree_t* tree, Node_t* node, errors* err);
 double ARCCOS_CASE(tree_t* tree, Node_t* node, errors* err);
 double ARCTAN_CASE(tree_t* tree, Node_t* node, errors* err);
 double ARCCOTAN_CASE(tree_t* tree, Node_t* node, errors* err);
-
-
 
 #endif
