@@ -4,6 +4,7 @@
 #include "print_tree.h"
 #include "tech_func.h"
 #include "count_calculator.h"
+#include "calculator.h"
 #include <math.h>
 
 int main()
@@ -16,11 +17,12 @@ int main()
     };
 
     if (tree.root_node == NULL)                                                                                    
-        return 1;                                                                                    
+        return 1;   
+
+    Calculate(&tree, tree.root_node, &err);
 
     printf("Tree was read successfully\n");
 
-    Count_Calculator(&tree, &err);
     if (err)
         return 1;
 

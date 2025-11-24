@@ -6,11 +6,11 @@ void Print_Node(Node_t* node, FILE* fp)
     assert(node);
 
     if (node->type == OPER_CODE)
-        fprintf(fp, "node%p [shape = record, color = blue, label=\"{type: %d | value: %d|{<f0> %p| <f1> %p}}\"];\n", node, node->type, node->value.op_code_t, node->left, node->right);
+        fprintf(fp, "node%p [shape = record, color = blue, label=\"{type: operation | value: %d|{<f0> %p| <f1> %p}}\"];\n", node, node->value.op_code_t, node->left, node->right);
     else if (node->type == VAR_CODE)
-        fprintf(fp, "node%p [shape = record, color = green, label=\"{type: %d | value: %d|{<f0> %p| <f1> %p}}\"];\n", node, node->type, node->value.var_ind, node->left, node->right);
+        fprintf(fp, "node%p [shape = record, color = green, label=\"{type: variable | value: %d|{<f0> %p| <f1> %p}}\"];\n", node, node->value.var_ind, node->left, node->right);
     else
-        fprintf(fp, "node%p [shape = record, color = red, label=\"{type: %d | value: %lg|{<f0> %p| <f1> %p}}\"];\n", node, node->type, node->value.num_t, node->left, node->right);
+        fprintf(fp, "node%p [shape = record, color = red, label=\"{type: number | value: %lg|{<f0> %p| <f1> %p}}\"];\n", node, node->value.num_t, node->left, node->right);
 
     if (node->left != NULL)
     {

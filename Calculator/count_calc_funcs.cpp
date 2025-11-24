@@ -39,13 +39,13 @@ double funcname(tree_t* tree, Node_t* node, errors* err)                        
         return func(Proc_Count_Calculating(tree, node->right, err));          \
 }
 
-ARITHMETIC_FUNC(ADD_CASE, +)
-ARITHMETIC_FUNC(SUB_CASE, -)
-ARITHMETIC_FUNC(MUL_CASE, *)
+ARITHMETIC_FUNC(COUNT_ADD_CASE, +)
+ARITHMETIC_FUNC(COUNT_SUB_CASE, -)
+ARITHMETIC_FUNC(COUNT_MUL_CASE, *)
 
 #undef ARITHMETIC_FUNC
 
-double DIV_CASE(tree_t* tree, Node_t* node, errors* err)
+double COUNT_DIV_CASE(tree_t* tree, Node_t* node, errors* err)
 {
     if (node->left == NULL || node->right == NULL)
     {
@@ -63,7 +63,7 @@ double DIV_CASE(tree_t* tree, Node_t* node, errors* err)
     return Proc_Count_Calculating(tree, node->left, err) / Proc_Count_Calculating(tree, node->right, err);
 }
 
-double STEPEN_CASE(tree_t* tree, Node_t* node, errors* err)
+double COUNT_STEPEN_CASE(tree_t* tree, Node_t* node, errors* err)
 {
     if (node->left == NULL || node->right == NULL)
     {
@@ -75,10 +75,10 @@ double STEPEN_CASE(tree_t* tree, Node_t* node, errors* err)
     return pow(Proc_Count_Calculating(tree, node->left, err), Proc_Count_Calculating(tree, node->right, err));
 }
 
-TRIG_FUNCS(SIN_CASE, sin)
-TRIG_FUNCS(COS_CASE, cos)
-TRIG_FUNCS(TAN_CASE, tan)
-double COTAN_CASE(tree_t* tree, Node_t* node, errors* err)
+TRIG_FUNCS(COUNT_SIN_CASE, sin)
+TRIG_FUNCS(COUNT_COS_CASE, cos)
+TRIG_FUNCS(COUNT_TAN_CASE, tan)
+double COUNT_COTAN_CASE(tree_t* tree, Node_t* node, errors* err)
 {
     if (node->left == NULL && node->right == NULL)
     {
@@ -105,10 +105,10 @@ double COTAN_CASE(tree_t* tree, Node_t* node, errors* err)
         return 1/tan(Proc_Count_Calculating(tree, node->right, err));
 }
 
-TRIG_FUNCS(ARCSIN_CASE, asin)
-TRIG_FUNCS(ARCCOS_CASE, acos)
-TRIG_FUNCS(ARCTAN_CASE, atan)
-double ARCCOTAN_CASE(tree_t* tree, Node_t* node, errors* err)
+TRIG_FUNCS(COUNT_ARCSIN_CASE, asin)
+TRIG_FUNCS(COUNT_ARCCOS_CASE, acos)
+TRIG_FUNCS(COUNT_ARCTAN_CASE, atan)
+double COUNT_ARCCOTAN_CASE(tree_t* tree, Node_t* node, errors* err)
 {
     if (node->left == NULL && node->right == NULL)
     {

@@ -1,7 +1,7 @@
 #include "../structs_defines_types.h"
-#include "count_calculator.h"
 #include "../tech_func.h"
-#include "count_calc_funcs.h"
+#include "calculator.h"
+#include "calc_func.h"
 #include <stdio.h>
 #include <math.h>
 
@@ -26,23 +26,38 @@ functions mas_functions[NUM_OPER] = {
     {ARCCOTAN_CASE, ARCCOTAN_CODE},
 };
 
-double Calculator(tree_t* tree, errors* err)
+double Calculate(tree_t* tree, Node_t* node, errors* err)
 {
-    return Proc_Count_Calculating(tree, tree->root_node, err);;
-}
-
-double Proc_Calculating(tree_t* tree, Node_t* node, errors* err)
-{
+    if (node == NULL)
+        return 0;
     if (node->type == NUM_CODE)
         return node->value.num_t;
     else if (node->type == VAR_CODE)
         return NAN;
     else
     {
+        double a = Calculate(tree, node->left, err);
+        double b = Calculate(tree, node->right, err);
+        if (isnan(a) || isnan(b))
+            return NAN;
         for (int i = 0; i < NUM_OPER; i++)
             if (mas_functions[i].func_code == node->value.op_code_t)
-                return mas_functions[i].funcname(tree, node, err);
+            {
+                double c = mas_functions[i].funcname(tree, node, err);
+                if (node->left != NULL)
+                {
+                    Tree_Destructor(node->left);
+                    node->left = NULL;
+                }
+                if (node->right != NULL)
+                {
+                    Tree_Destructor(node->right);
+                    node->right = NULL;
+                }
+                node->type = NUM_CODE;
+                node->value.num_t = c;
+                return c;
+            }
+        return 0;
     }
-
-    return 0;
 }

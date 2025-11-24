@@ -14,8 +14,8 @@ double funcname(tree_t* tree, Node_t* node, errors* err)                \
         *err = NODE_NULL;                                               \
         return 0;                                                       \
     }                                                                   \
-    double a = Proc_Calculating(tree, node->left,err);            \
-    double b = Proc_Calculating(tree, node->right,err);           \
+    double a = Calculate(tree, node->left,err);            \
+    double b = Calculate(tree, node->right,err);           \
     if (isnan(a) || isnan(b))                                           \
         return NAN;                                                     \
     return a sign b;                                                    \
@@ -36,7 +36,7 @@ double funcname(tree_t* tree, Node_t* node, errors* err)                \
         *err = TOO_MANY_ARGS;                                           \
         return 1;                                                       \
     }                                                                   \
-    double a = Proc_Calculating(tree, node->left,err);            \
+    double a = Calculate(tree, node->left,err);            \
     if (isnan(a))                                                       \
         return NAN;                                                     \
     return a;                                                           \
@@ -56,8 +56,8 @@ double DIV_CASE(tree_t* tree, Node_t* node, errors* err)
         *err = NODE_NULL;
         return 1;
     }
-    double a = Proc_Calculating(tree, node->left, err);
-    double b = Proc_Calculating(tree, node->right, err);
+    double a = Calculate(tree, node->left, err);
+    double b = Calculate(tree, node->right, err);
     if (Is_Zero(b))
     {
         fprintf (stderr, "NA NOL DELIT NELZYA!\n");
@@ -78,8 +78,8 @@ double STEPEN_CASE(tree_t* tree, Node_t* node, errors* err)
         return 1;
     }
 
-    double a = Proc_Calculating(tree, node->left, err);
-    double b = Proc_Calculating(tree, node->right, err);
+    double a = Calculate(tree, node->left, err);
+    double b = Calculate(tree, node->right, err);
     
     if (isnan(a) || isnan(b))
         return NAN;
@@ -103,14 +103,14 @@ double COTAN_CASE(tree_t* tree, Node_t* node, errors* err)
         *err = TOO_MANY_ARGS;
         return 1;
     }
-    double a = tan(Proc_Calculating(tree, node->left, err));
+    double a = tan(Calculate(tree, node->left, err));
     if (Is_Zero(a))
     {
         fprintf (stderr, "Cotangens doesn't exist at this point\n");;
         *err = ZNAMEN_NULL;
         return 1;
     }
-    return 1/tan(Proc_Calculating(tree, node->left, err));
+    return 1/tan(Calculate(tree, node->left, err));
 }
 
 TRIG_FUNCS(ARCSIN_CASE, asin)
@@ -131,8 +131,8 @@ double ARCCOTAN_CASE(tree_t* tree, Node_t* node, errors* err)
         return 1;
     }
     if (node->left != NULL)
-        return M_PI/2 - tan(Proc_Calculating(tree, node->left, err));
+        return M_PI/2 - tan(Calculate(tree, node->left, err));
     else
-        return M_PI/2 - tan(Proc_Calculating(tree, node->right, err));
+        return M_PI/2 - tan(Calculate(tree, node->right, err));
 }
 #undef TRIG_FUNCS

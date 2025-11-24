@@ -10,20 +10,20 @@ struct functions{
     enum oper_codes func_code;
 };
 
-functions mas_functions[NUM_OPER] = {
-    {ADD_CASE, ADD_CODE},
-    {SUB_CASE, SUB_CODE},
-    {MUL_CASE, MUL_CODE},
-    {DIV_CASE, DIV_CODE},
-    {STEPEN_CASE, STEPEN_CODE},
-    {SIN_CASE, SIN_CODE},
-    {COS_CASE, COS_CODE},
-    {TAN_CASE, TAN_CODE},
-    {COTAN_CASE, COTAN_CODE},
-    {ARCSIN_CASE, ARCSIN_CODE},
-    {ARCCOS_CASE, ARCCOS_CODE},
-    {ARCTAN_CASE, ARCTAN_CODE},
-    {ARCCOTAN_CASE, ARCCOTAN_CODE},
+functions mas_count_functions[NUM_OPER] = {
+    {COUNT_ADD_CASE, ADD_CODE},
+    {COUNT_SUB_CASE, SUB_CODE},
+    {COUNT_MUL_CASE, MUL_CODE},
+    {COUNT_DIV_CASE, DIV_CODE},
+    {COUNT_STEPEN_CASE, STEPEN_CODE},
+    {COUNT_SIN_CASE, SIN_CODE},
+    {COUNT_COS_CASE, COS_CODE},
+    {COUNT_TAN_CASE, TAN_CODE},
+    {COUNT_COTAN_CASE, COTAN_CODE},
+    {COUNT_ARCSIN_CASE, ARCSIN_CODE},
+    {COUNT_ARCCOS_CASE, ARCCOS_CODE},
+    {COUNT_ARCTAN_CASE, ARCTAN_CODE},
+    {COUNT_ARCCOTAN_CASE, ARCCOTAN_CODE},
 };
 
 double Count_Calculator(tree_t* tree, errors* err)
@@ -62,8 +62,8 @@ double Proc_Count_Calculating(tree_t* tree, Node_t* node, errors* err)
     else
     {
         for (int i = 0; i < NUM_OPER; i++)
-            if (mas_functions[i].func_code == node->value.op_code_t)
-                return mas_functions[i].funcname(tree, node, err);
+            if (mas_count_functions[i].func_code == node->value.op_code_t)
+                return mas_count_functions[i].funcname(tree, node, err);
     }
 
     return 0;
