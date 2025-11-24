@@ -36,7 +36,7 @@ double funcname(tree_t* tree, Node_t* node, errors* err)                \
         *err = TOO_MANY_ARGS;                                           \
         return 1;                                                       \
     }                                                                   \
-    double a = Calculate(tree, node->left,err);            \
+    double a = Calculate(tree, node->left,err);                         \
     if (isnan(a))                                                       \
         return NAN;                                                     \
     return a;                                                           \

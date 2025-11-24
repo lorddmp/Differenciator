@@ -10,10 +10,10 @@ Node_t* Read_Node(tree_t* tree, int* position, char* massive);
 
 Node_t* Obrabotka_Node(tree_t* tree, int* position, char* massive);
 
-Node_t* Spot_Type(tree_t* tree, Node_t* node, int* position, char* massive);
+Node_t* Spot_Type(tree_t* tree, int* position, char* massive);
 
-int Operation_checking(Node_t* node, int* position, char* massive);
+int Operation_checking(int* position, char* massive);
 
-bool Var_Checking(tree_t* tree, Node_t* node, int* position, char* massive);
+int Var_Checking(tree_t* tree, int* position, char* massive);
 
 #endif

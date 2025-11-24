@@ -3,7 +3,7 @@
 
 #define READ_TREE_FILE "Math_problem.txt"
 #define DUMP_TREE_FILE "Dump_tree.txt"
-#define NUM_OPER 13
+#define NUM_OPER 14
 
 #define IF_ERROR(arg)                                                                                   \
 do {                                                                                                    \
@@ -28,6 +28,7 @@ enum type_codes{
 };
 
 enum oper_codes{
+    ERROR_CODE = 0,
     ADD_CODE = 1,
     SUB_CODE = 2,
     MUL_CODE = 3,

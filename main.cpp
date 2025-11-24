@@ -17,14 +17,15 @@ int main()
     };
 
     if (tree.root_node == NULL)                                                                                    
-        return 1;   
-
-    Calculate(&tree, tree.root_node, &err);
-
-    printf("Tree was read successfully\n");
+        return 1;
 
     if (err)
         return 1;
+
+    printf("Tree was read successfully\n");
+
+    // double result = Count_Calculator(&tree, &err);
+    // printf("%lg", result);
 
     Print_Tree(tree.root_node);
 

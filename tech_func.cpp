@@ -23,10 +23,15 @@ bool Is_Zero(double a)
         return false; 
 }
 
-Node_t* Make_Node()
+Node_t* Make_Node(type_codes type, value_dif value, Node_t* left, Node_t* right)
 {
     Node_t* new_node = (Node_t*)calloc(1, sizeof(Node_t));
     IF_ERROR(new_node);
+
+    new_node->type = type;
+    new_node->value = value;
+    new_node->left = left;
+    new_node->right = right;
 
     return new_node;
 }
