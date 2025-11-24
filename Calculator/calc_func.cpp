@@ -1,0 +1,138 @@
+#include "calc_func.h"
+#include "calculator.h"
+#include "../tech_func.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+#define ARITHMETIC_FUNC(funcname, sign)                                 \
+double funcname(tree_t* tree, Node_t* node, errors* err)                \
+{                                                                       \
+    if (node->left == NULL || node->right == NULL)                      \
+    {                                                                   \
+        fprintf (stderr, "Empty node where it needs to be filled");     \
+        *err = NODE_NULL;                                               \
+        return 0;                                                       \
+    }                                                                   \
+    double a = Proc_Calculating(tree, node->left,err);            \
+    double b = Proc_Calculating(tree, node->right,err);           \
+    if (isnan(a) || isnan(b))                                           \
+        return NAN;                                                     \
+    return a sign b;                                                    \
+}
+
+#define TRIG_FUNCS(funcname, func)                                      \
+double funcname(tree_t* tree, Node_t* node, errors* err)                \
+{                                                                       \
+    if (node->left == NULL && node->right == NULL)                      \
+    {                                                                   \
+        fprintf (stderr, "Empty node where it needs to be filled\n");   \
+        *err = NODE_NULL;                                               \
+        return 1;                                                       \
+    }                                                                   \
+    else if (node->left != NULL && node->right != NULL)                 \
+    {                                                                   \
+        fprintf (stderr, "Trig_func gets only one argument\n");         \
+        *err = TOO_MANY_ARGS;                                           \
+        return 1;                                                       \
+    }                                                                   \
+    double a = Proc_Calculating(tree, node->left,err);            \
+    if (isnan(a))                                                       \
+        return NAN;                                                     \
+    return a;                                                           \
+}
+
+ARITHMETIC_FUNC(ADD_CASE, +)
+ARITHMETIC_FUNC(SUB_CASE, -)
+ARITHMETIC_FUNC(MUL_CASE, *)
+
+#undef ARITHMETIC_FUNC
+
+double DIV_CASE(tree_t* tree, Node_t* node, errors* err)
+{
+    if (node->left == NULL || node->right == NULL)
+    {
+        fprintf (stderr, "Empty node where it needs to be filled\n");
+        *err = NODE_NULL;
+        return 1;
+    }
+    double a = Proc_Calculating(tree, node->left, err);
+    double b = Proc_Calculating(tree, node->right, err);
+    if (Is_Zero(b))
+    {
+        fprintf (stderr, "NA NOL DELIT NELZYA!\n");
+        *err = ZNAMEN_NULL;
+        return 1;
+    }
+    else if (isnan(a) || isnan(b))
+        return NAN;
+    return a/b;
+}
+
+double STEPEN_CASE(tree_t* tree, Node_t* node, errors* err)
+{
+    if (node->left == NULL || node->right == NULL)
+    {
+        fprintf (stderr, "Empty node where it needs to be filled\n");
+        *err = NODE_NULL;
+        return 1;
+    }
+
+    double a = Proc_Calculating(tree, node->left, err);
+    double b = Proc_Calculating(tree, node->right, err);
+    
+    if (isnan(a) || isnan(b))
+        return NAN;
+    return pow(a,b);
+}
+
+TRIG_FUNCS(SIN_CASE, sin)
+TRIG_FUNCS(COS_CASE, cos)
+TRIG_FUNCS(TAN_CASE, tan)
+double COTAN_CASE(tree_t* tree, Node_t* node, errors* err)
+{
+    if (node->left == NULL && node->right == NULL)
+    {
+        fprintf (stderr, "Empty node where it needs to be filled\n");
+        *err = NODE_NULL;
+        return 1;
+    }
+    else if (node->left != NULL && node->right != NULL)
+    {
+        fprintf (stderr, "Trig_func gets only one argument\n");
+        *err = TOO_MANY_ARGS;
+        return 1;
+    }
+    double a = tan(Proc_Calculating(tree, node->left, err));
+    if (Is_Zero(a))
+    {
+        fprintf (stderr, "Cotangens doesn't exist at this point\n");;
+        *err = ZNAMEN_NULL;
+        return 1;
+    }
+    return 1/tan(Proc_Calculating(tree, node->left, err));
+}
+
+TRIG_FUNCS(ARCSIN_CASE, asin)
+TRIG_FUNCS(ARCCOS_CASE, acos)
+TRIG_FUNCS(ARCTAN_CASE, atan)
+double ARCCOTAN_CASE(tree_t* tree, Node_t* node, errors* err)
+{
+    if (node->left == NULL && node->right == NULL)
+    {
+        fprintf (stderr, "Empty node where it needs to be filled\n");
+        *err = NODE_NULL;
+        return 1;
+    }
+    else if (node->left != NULL && node->right != NULL)
+    {
+        fprintf (stderr, "Trig_func gets only one argument\n");
+        *err = TOO_MANY_ARGS;
+        return 1;
+    }
+    if (node->left != NULL)
+        return M_PI/2 - tan(Proc_Calculating(tree, node->left, err));
+    else
+        return M_PI/2 - tan(Proc_Calculating(tree, node->right, err));
+}
+#undef TRIG_FUNCS

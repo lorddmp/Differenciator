@@ -1,6 +1,6 @@
-#include "calc_funcs.h"
-#include "tree_calculator_get_vars.h"
-#include "tech_func.h"
+#include "count_calc_funcs.h"
+#include "count_calculator.h"
+#include "../tech_func.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -14,7 +14,7 @@ double funcname(tree_t* tree, Node_t* node, errors* err)                        
         *err = NODE_NULL;                                                                                                           \
         return 0;                                                                                                                   \
     }                                                                                                                               \
-    return Proc_Calculating_With_Ginen_Vars(tree, node->left,err) sign Proc_Calculating_With_Ginen_Vars(tree, node->right, err);    \
+    return Proc_Count_Calculating(tree, node->left,err) sign Proc_Count_Calculating(tree, node->right, err);    \
 }
 
 #define TRIG_FUNCS(funcname, func)                                                      \
@@ -34,9 +34,9 @@ double funcname(tree_t* tree, Node_t* node, errors* err)                        
     }                                                                                   \
                                                                                         \
     if (node->left != NULL)                                                             \
-        return func(Proc_Calculating_With_Ginen_Vars(tree, node->left, err));           \
+        return func(Proc_Count_Calculating(tree, node->left, err));           \
     else                                                                                \
-        return func(Proc_Calculating_With_Ginen_Vars(tree, node->right, err));          \
+        return func(Proc_Count_Calculating(tree, node->right, err));          \
 }
 
 ARITHMETIC_FUNC(ADD_CASE, +)
@@ -53,14 +53,14 @@ double DIV_CASE(tree_t* tree, Node_t* node, errors* err)
         *err = NODE_NULL;
         return 1;
     }
-    double a = Proc_Calculating_With_Ginen_Vars(tree, node->right, err);
+    double a = Proc_Count_Calculating(tree, node->right, err);
     if (Is_Zero(a))
     {
         fprintf (stderr, "NA NOL DELIT NELZYA!\n");
         *err = ZNAMEN_NULL;
         return 1;
     }
-    return Proc_Calculating_With_Ginen_Vars(tree, node->left, err) / Proc_Calculating_With_Ginen_Vars(tree, node->right, err);
+    return Proc_Count_Calculating(tree, node->left, err) / Proc_Count_Calculating(tree, node->right, err);
 }
 
 double STEPEN_CASE(tree_t* tree, Node_t* node, errors* err)
@@ -72,7 +72,7 @@ double STEPEN_CASE(tree_t* tree, Node_t* node, errors* err)
         return 1;
     }
 
-    return pow(Proc_Calculating_With_Ginen_Vars(tree, node->left, err), Proc_Calculating_With_Ginen_Vars(tree, node->right, err));
+    return pow(Proc_Count_Calculating(tree, node->left, err), Proc_Count_Calculating(tree, node->right, err));
 }
 
 TRIG_FUNCS(SIN_CASE, sin)
@@ -92,7 +92,7 @@ double COTAN_CASE(tree_t* tree, Node_t* node, errors* err)
         *err = TOO_MANY_ARGS;
         return 1;
     }
-    double a = tan(Proc_Calculating_With_Ginen_Vars(tree, node->left, err));
+    double a = tan(Proc_Count_Calculating(tree, node->left, err));
     if (Is_Zero(a))
     {
         fprintf (stderr, "Cotangens doesn't exist at this point\n");;
@@ -100,9 +100,9 @@ double COTAN_CASE(tree_t* tree, Node_t* node, errors* err)
         return 1;
     }
     if (node->left != NULL)
-        return 1/tan(Proc_Calculating_With_Ginen_Vars(tree, node->left, err));
+        return 1/tan(Proc_Count_Calculating(tree, node->left, err));
     else
-        return 1/tan(Proc_Calculating_With_Ginen_Vars(tree, node->right, err));
+        return 1/tan(Proc_Count_Calculating(tree, node->right, err));
 }
 
 TRIG_FUNCS(ARCSIN_CASE, asin)
@@ -123,8 +123,8 @@ double ARCCOTAN_CASE(tree_t* tree, Node_t* node, errors* err)
         return 1;
     }
     if (node->left != NULL)
-        return M_PI/2 - tan(Proc_Calculating_With_Ginen_Vars(tree, node->left, err));
+        return M_PI/2 - tan(Proc_Count_Calculating(tree, node->left, err));
     else
-        return M_PI/2 - tan(Proc_Calculating_With_Ginen_Vars(tree, node->right, err));
+        return M_PI/2 - tan(Proc_Count_Calculating(tree, node->right, err));
 }
 #undef TRIG_FUNCS

@@ -1,6 +1,6 @@
 #ifndef CALC_FUNCS
 #define CALC_FUNCS
-#include "structs_defines_types.h"
+#include "../structs_defines_types.h"
 
 double ADD_CASE(tree_t* tree, Node_t* node, errors* err);
 double SUB_CASE(tree_t* tree, Node_t* node, errors* err);

@@ -3,7 +3,8 @@
 #include "read_tree.h"
 #include "print_tree.h"
 #include "tech_func.h"
-#include "tree_calculator_get_vars.h"
+#include "count_calculator.h"
+#include <math.h>
 
 int main()
 {
@@ -19,7 +20,7 @@ int main()
 
     printf("Tree was read successfully\n");
 
-    Calculator_With_Getting_Vars(&tree, &err);
+    Count_Calculator(&tree, &err);
     if (err)
         return 1;
 

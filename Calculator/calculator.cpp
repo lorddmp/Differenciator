@@ -1,7 +1,7 @@
-#include "structs_defines_types.h"
-#include "tree_calculator_get_vars.h"
-#include "tech_func.h"
-#include "calc_funcs.h"
+#include "../structs_defines_types.h"
+#include "count_calculator.h"
+#include "../tech_func.h"
+#include "count_calc_funcs.h"
 #include <stdio.h>
 #include <math.h>
 
@@ -26,39 +26,17 @@ functions mas_functions[NUM_OPER] = {
     {ARCCOTAN_CASE, ARCCOTAN_CODE},
 };
 
-double Calculator_With_Getting_Vars(tree_t* tree, errors* err)
+double Calculator(tree_t* tree, errors* err)
 {
-    Get_Var_Values(tree);
-
-    return Proc_Calculating_With_Ginen_Vars(tree, tree->root_node, err);;
+    return Proc_Count_Calculating(tree, tree->root_node, err);;
 }
 
-void Get_Var_Values(tree_t* tree)
+double Proc_Calculating(tree_t* tree, Node_t* node, errors* err)
 {
-    printf("Please write values of all given variables:\n");
-
-    for (int i = 0; i < tree->num_var; i++)
-    {
-        while(true)
-        {
-            printf("%s = ?\b", tree->hash_table[i].name);
-            if (scanf("%lg", &tree->hash_table[i].var_value) == 1)
-                break;
-            else
-                printf("Error in getting variable. Try again\n");
-        }
-    }
-}
-
-double Proc_Calculating_With_Ginen_Vars(tree_t* tree, Node_t* node, errors* err)
-{
-    double x = NAN;
-    isnan(x);
-
     if (node->type == NUM_CODE)
         return node->value.num_t;
     else if (node->type == VAR_CODE)
-        return tree->hash_table[node->value.var_ind].var_value;
+        return NAN;
     else
     {
         for (int i = 0; i < NUM_OPER; i++)
