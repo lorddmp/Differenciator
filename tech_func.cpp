@@ -1,0 +1,44 @@
+#include "tech_func.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+
+void Clean_Buffer(void)
+{
+    while(getchar() != '\n');
+}
+
+void Skip_Spaces(int* position, char* massive)
+{
+    assert(massive);
+    while (massive[*position] == ' ')
+        (*position)++;
+}
+
+bool Is_Zero(double a)
+{
+    if (a < 1e-9)
+        return true;
+    else
+        return false; 
+}
+
+Node_t* Make_Node()
+{
+    Node_t* new_node = (Node_t*)calloc(1, sizeof(Node_t));
+    IF_ERROR(new_node);
+
+    return new_node;
+}
+
+void Tree_Destructor(Node_t* node)
+{
+    assert(node);
+    if (node->left != NULL)
+        Tree_Destructor(node->left);
+
+    if (node->right != NULL)
+        Tree_Destructor(node->right);
+
+    free(node);
+}
