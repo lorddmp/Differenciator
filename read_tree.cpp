@@ -9,8 +9,8 @@
 #include <assert.h>  
 
 oper_t massive_op[NUM_OPER] = {
-        {"-",           SUB_CODE,       1},
         {"+",           ADD_CODE,       1},
+        {"-",           SUB_CODE,       1},
         {"*",           MUL_CODE,       1},
         {"/",           DIV_CODE,       1},
         {"^",           STEPEN_CODE,    1},
@@ -22,9 +22,10 @@ oper_t massive_op[NUM_OPER] = {
         {"arccos",      ARCCOS_CODE,    6},
         {"arctan",      ARCTAN_CODE,    6},
         {"arccotan",    ARCCOTAN_CODE,  6},
+        {"ln",          LN_CODE,        2},         
     };
 
-Node_t* Read_Tree(tree_t* tree)
+Node_t* Read_Tree(differentiator_t* tree)
 { 
     printf("Please write number of variables: \n");
     scanf("%d", &tree->num_var);
@@ -37,13 +38,6 @@ Node_t* Read_Tree(tree_t* tree)
         scanf("%s", tree->hash_table[i].name);
         tree->hash_table[i].index = i;
         tree->hash_table[i].hash_len = (int)strlen(tree->hash_table[i].name);
-    }
-
-    for (int i = 0; i < tree->num_var; i++)
-    {
-        printf("tree->hash_table[i].name = %s\n", tree->hash_table[i].name);
-        printf("tree->hash_table[i].index = %d\n", tree->hash_table[i].index);
-        printf("tree->hash_table[i].len = %d\n\n", tree->hash_table[i].hash_len);
     }
 
     FILE* fp = fopen(READ_TREE_FILE, "r");
@@ -67,7 +61,7 @@ Node_t* Read_Tree(tree_t* tree)
     return(node);
 }
 
-Node_t* Read_Node(tree_t* tree, int* position, char* massive)
+Node_t* Read_Node(differentiator_t* tree, int* position, char* massive)
 {
     Skip_Spaces(position, massive);
 
@@ -85,12 +79,13 @@ Node_t* Read_Node(tree_t* tree, int* position, char* massive)
     }
     else
     {
-        fprintf(stderr, "Error in reading file\n");
+        printf("SUKA position: %c\n", massive[*position]);
+        fprintf(stderr, "Error in reading file SUKA\n");
         return NULL;
     }
 }
 
-Node_t* Obrabotka_Node(tree_t* tree, int* position, char* massive)
+Node_t* Obrabotka_Node(differentiator_t* tree, int* position, char* massive)
 {
     (*position)++;
     Skip_Spaces(position, massive);
@@ -110,7 +105,7 @@ Node_t* Obrabotka_Node(tree_t* tree, int* position, char* massive)
     return node;
 }
 
-Node_t* Spot_Type(tree_t* tree, int* position, char* massive)
+Node_t* Spot_Type(differentiator_t* tree, int* position, char* massive)
 {
     int num = 0, i = -52;
     double new_value_value = 0;
@@ -162,7 +157,7 @@ int Operation_checking(int* position, char* massive)
     return -2;
 }
 
-int Var_Checking(tree_t* tree, int* position, char* massive)
+int Var_Checking(differentiator_t* tree, int* position, char* massive)
 {
     for (int i = 0; i <= tree->num_var; i++)
     {

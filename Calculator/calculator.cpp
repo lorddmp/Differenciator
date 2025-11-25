@@ -1,12 +1,12 @@
-#include "../structs_defines_types.h"
-#include "../tech_func.h"
+#include "structs_defines_types.h"
+#include "tech_func.h"
 #include "calculator.h"
 #include "calc_func.h"
 #include <stdio.h>
 #include <math.h>
 
 struct functions{
-    double(*funcname)(tree_t* tree, Node_t* node, errors* err);
+    double(*funcname)(differentiator_t* tree, Node_t* node, errors* err);
     enum oper_codes func_code;
 };
 
@@ -24,9 +24,11 @@ functions mas_functions[NUM_OPER] = {
     {ARCCOS_CASE, ARCCOS_CODE},
     {ARCTAN_CASE, ARCTAN_CODE},
     {ARCCOTAN_CASE, ARCCOTAN_CODE},
+    {LN_CASE, LN_CODE},
+
 };
 
-double Calculate(tree_t* tree, Node_t* node, errors* err)
+double Calculate(differentiator_t* tree, Node_t* node, errors* err)
 {
     if (node == NULL)
         return 0;
@@ -40,6 +42,7 @@ double Calculate(tree_t* tree, Node_t* node, errors* err)
         double b = Calculate(tree, node->right, err);
         if (isnan(a) || isnan(b))
             return NAN;
+        //
         for (int i = 0; i < NUM_OPER; i++)
             if (mas_functions[i].func_code == node->value.op_code_t)
             {

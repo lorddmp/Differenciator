@@ -28,7 +28,6 @@ enum type_codes{
 };
 
 enum oper_codes{
-    ERROR_CODE = 0,
     ADD_CODE = 1,
     SUB_CODE = 2,
     MUL_CODE = 3,
@@ -42,6 +41,7 @@ enum oper_codes{
     ARCCOS_CODE = 11,
     ARCTAN_CODE = 12,
     ARCCOTAN_CODE = 13,
+    LN_CODE = 14,
 };
 
 struct oper_t{
@@ -65,7 +65,7 @@ struct Node_t {
     value_dif value;
 };
 
-struct tree_t{
+struct differentiator_t {
     int num_var;
     Node_t* root_node;
     hash* hash_table;
@@ -75,7 +75,7 @@ enum errors{
     NO_ERRORS = 0,
     NODE_NULL = 1,
     TOO_MANY_ARGS = 2,
-    ZNAMEN_NULL = 3,
+    FORBIDDEN_NULL = 3,
 };
 
 #endif

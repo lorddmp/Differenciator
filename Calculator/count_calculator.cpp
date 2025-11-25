@@ -1,4 +1,4 @@
-#include "../structs_defines_types.h"
+#include "structs_defines_types.h"
 #include "count_calculator.h"
 #include "../tech_func.h"
 #include "count_calc_funcs.h"
@@ -6,7 +6,7 @@
 #include <math.h>
 
 struct functions{
-    double(*funcname)(tree_t* tree, Node_t* node, errors* err);
+    double(*funcname)(differentiator_t* tree, Node_t* node, errors* err);
     enum oper_codes func_code;
 };
 
@@ -24,16 +24,17 @@ functions mas_count_functions[NUM_OPER] = {
     {COUNT_ARCCOS_CASE, ARCCOS_CODE},
     {COUNT_ARCTAN_CASE, ARCTAN_CODE},
     {COUNT_ARCCOTAN_CASE, ARCCOTAN_CODE},
+    {COUNT_LN_CASE, LN_CODE},
 };
 
-double Count_Calculator(tree_t* tree, errors* err)
+double Count_Calculator(differentiator_t* tree, errors* err)
 {
     Get_Var_Values(tree);
 
     return Proc_Count_Calculating(tree, tree->root_node, err);;
 }
 
-void Get_Var_Values(tree_t* tree)
+void Get_Var_Values(differentiator_t* tree)
 {
     printf("Please write values of all given variables:\n");
 
@@ -50,11 +51,8 @@ void Get_Var_Values(tree_t* tree)
     }
 }
 
-double Proc_Count_Calculating(tree_t* tree, Node_t* node, errors* err)
+double Proc_Count_Calculating(differentiator_t* tree, Node_t* node, errors* err)
 {
-    double x = NAN;
-    isnan(x);
-
     if (node->type == NUM_CODE)
         return node->value.num_t;
     else if (node->type == VAR_CODE)
