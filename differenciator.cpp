@@ -62,49 +62,74 @@ Node_t* Proc_Copying(Node_t* node)
     return new_node;
 }
 
-#define IF_CAN_OPTIMYZED_WITH_RETURN_ONLY_VALUE(func_code, number)                                                              \
-if (node->value.op_code_t == func_code && (node->left->type == NUM_CODE && Is_Zero(node->left->value.num_t)))                    \
-{                                                                                                                               \
-    if (node->parent != NULL)                                                                                                   \
-    {                                                                                                                           \
-        if (node->parent->left == node)                                                                                         \
-            node->parent->left = node->right;                                                                                   \
-        else                                                                                                                    \
-            node->parent->right = node->right;                                                                                  \
-        node->right = NULL;                                                                                                     \
-        Tree_Destructor(node);                                                                                                  \
-    }                                                                                                                           \
-    else                                                                                                                        \
-        node = node->right;                                                                                                     \
-}                                                                                                                               \
-else if (node->value.op_code_t == func_code && (node->right->type == NUM_CODE && Is_Zero(node->right->value.num_t)))            \
-{                                                                                                                               \
-    if (node->parent != NULL)                                                                                                   \
-    {                                                                                                                           \
-        if (node->parent->left == node)                                                                                         \
-            node->parent->left = node->left;                                                                                    \
-        else                                                                                                                    \
-            node->parent->right = node->left;                                                                                   \
-        node->left = NULL;                                                                                                      \
-        Tree_Destructor(node);                                                                                                  \
-    }                                                                                                                           \
-    else                                                                                                                        \
-    {                                                                                                                           \
-        node = node->left;                                                                                                      \
-        node->parent->left = NULL;                                                                                              \
-        Tree_Destructor(node);                                                                                                  \
-    }                                                                                                                           \
+
+#define IF_CAN_OPTIMYZED_WITH_RETURN_VALUE(func_code, number, sides)                                                                                        \
+if ((*node)->value.op_code_t == func_code && ((*node)->left->type == NUM_CODE && Is_Zero((*node)->left->value.num_t - number)))                             \
+{                                                                                                                                                            \
+    if ((*node)->parent != NULL)                                                                                                                            \
+    {                                                                                                                                                       \
+        if ((*node)->parent->left == (*node))                                                                                                               \
+            (*node)->parent->left = (*node)->right;                                                                                                         \
+        else                                                                                                                                                \
+            (*node)->parent->right = (*node)->right;                                                                                                        \
+        (*node)->right = NULL;                                                                                                                              \
+        Tree_Destructor((*node));                                                                                                                           \
+    }                                                                                                                                                       \
+    else                                                                                                                                                    \
+        (*node) = (*node)->right;                                                                                                                           \
+}                                                                                                                                                           \
+else if ((*node)->value.op_code_t == func_code && ((*node)->right->type == NUM_CODE && Is_Zero((*node)->right->value.num_t - number)) && sides == 2)        \
+{                                                                                                                                                            \
+    if ((*node)->parent != NULL)                                                                                                                            \
+    {                                                                                                                                                       \
+        if ((*node)->parent->left == (*node))                                                                                                               \
+            (*node)->parent->left = (*node)->left;                                                                                                          \
+        else                                                                                                                                                \
+            (*node)->parent->right = (*node)->left;                                                                                                         \
+        (*node)->left = NULL;                                                                                                                               \
+        Tree_Destructor((*node));                                                                                                                           \
+    }                                                                                                                                                       \
+    else                                                                                                                                                    \
+    {                                                                                                                                                       \
+        (*node) = (*node)->left;                                                                                                                            \
+    }                                                                                                                                                       \
 }
 
-void Proc_Optymizing(Node_t* node)
-{
-    if (node->type == OPER_CODE)
-    {
-        if (node->left != NULL)
-            Proc_Optymizing(node->left);
-        if (node->right != NULL)
-            Proc_Optymizing(node->right);
+#define IF_CAN_OPTIMYZED_WITH_RETURN_NUM(func_code, number, returnable_num, sides)                                                                          \
+else if ((*node)->value.op_code_t == func_code && ((*node)->left->type == NUM_CODE && Is_Zero((*node)->left->value.num_t - number)))                             \
+{                                                                                                                                                           \
+    (*node)->type = NUM_CODE;                                                                                                                               \
+    (*node)->value.num_t = returnable_num;                                                                                                                  \
+    Tree_Destructor((*node)->left);                                                                                                                         \
+    (*node)->left = NULL;                                                                                                                                   \
+    Tree_Destructor((*node)->right);                                                                                                                        \
+    (*node)->right = NULL;                                                                                                                                  \
+}                                                                                                                                                           \
+else if ((*node)->value.op_code_t == func_code && ((*node)->right->type == NUM_CODE && Is_Zero((*node)->right->value.num_t - number)) && sides == 2)        \
+{                                                                                                                                                           \
+    (*node)->type = NUM_CODE;                                                                                                                               \
+    (*node)->value.num_t = returnable_num;                                                                                                                  \
+    Tree_Destructor((*node)->left);                                                                                                                         \
+    (*node)->left = NULL;                                                                                                                                   \
+    Tree_Destructor((*node)->right);                                                                                                                        \
+    (*node)->right = NULL;                                                                                                                                  \
+}
 
-        IF_CAN_OPTIMYZED_WITH_RETURN_ONLY_VALUE(ADD_CODE, 0)
+void Proc_Optymizing(Node_t** node)
+{
+    if ((*node)->type == OPER_CODE)
+    {
+        if ((*node)->left != NULL)
+            Proc_Optymizing(&(*node)->left);
+        if ((*node)->right != NULL)
+            Proc_Optymizing(&(*node)->right);
+        
+        IF_CAN_OPTIMYZED_WITH_RETURN_VALUE(ADD_CODE, 0, 2)
+        IF_CAN_OPTIMYZED_WITH_RETURN_VALUE(SUB_CODE, 0, 2)
+        IF_CAN_OPTIMYZED_WITH_RETURN_VALUE(MUL_CODE, 1, 2)
+        IF_CAN_OPTIMYZED_WITH_RETURN_VALUE(DIV_CODE, 1, 1)
+        IF_CAN_OPTIMYZED_WITH_RETURN_VALUE(STEPEN_CODE, 1, 1)
+        IF_CAN_OPTIMYZED_WITH_RETURN_NUM(MUL_CODE, 0, 0, 2)
+        IF_CAN_OPTIMYZED_WITH_RETURN_NUM(DIV_CODE, 0, 0, 1)
     }
 }

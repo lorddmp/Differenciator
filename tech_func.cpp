@@ -1,6 +1,7 @@
 #include "tech_func.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include <assert.h>
 
 void Clean_Buffer(void)
@@ -17,7 +18,7 @@ void Skip_Spaces(int* position, char* massive)
 
 bool Is_Zero(double a)
 {
-    if (a < 1e-9)
+    if (abs(a) < 1e-9)
         return true;
     else
         return false; 
