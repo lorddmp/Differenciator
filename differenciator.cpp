@@ -1,30 +1,9 @@
 #include "differenciator.h"
 #include "tech_func.h"
+#include "DSL.h"
 #include <stdio.h>
 #include <assert.h>
 
-#define _LEFT  node->left
-#define _RIGHT node->right
-
-#define OPER_NODE(a, ...)  Make_Node(OPER_CODE, {.op_code_t = a}, __VA_ARGS__)
-#define NUM_NODE(num) Make_Node(NUM_CODE, {.num_t = num})
-#define _C(node) Proc_Copying(node)
-#define _D(node) Proc_Differing(node)
-
-#define _ADD(node) OPER_NODE(ADD_CODE, _D(_LEFT), _D(_RIGHT))
-#define _SUB(node) OPER_NODE(SUB_CODE, _D(_LEFT), _D(_RIGHT))
-#define _MUL(node) OPER_NODE(ADD_CODE, _D(_LEFT), _D(_RIGHT))
-#define _DIV(node) OPER_NODE(DIV_CODE, OPER_NODE(SUB_CODE, OPER_NODE(MUL_CODE, _D(_LEFT), _C(_RIGHT)), OPER_NODE(MUL_CODE, _C(_LEFT), _D(_RIGHT))), OPER_NODE(STEPEN_CODE, _C(_LEFT), NUM_NODE(2)))
-#define _STEPEN(node) OPER_NODE(MUL_CODE, OPER_NODE(STEPEN_CODE, _C(_LEFT), _C(_RIGHT)), OPER_NODE(DIV_CODE, OPER_NODE(ADD_CODE, OPER_NODE(MUL_CODE, OPER_NODE(MUL_CODE, _C(_LEFT), _D(_RIGHT)), OPER_NODE(LN_CODE, _C(_LEFT))), OPER_NODE(MUL_CODE, _D(_LEFT), _C(_RIGHT))), _C(_LEFT)))
-#define _SIN(node) OPER_NODE(MUL_CODE, OPER_NODE(COS_CODE, _C(_LEFT)), _D(_LEFT))
-#define _COS(node) OPER_NODE(MUL_CODE, OPER_NODE(MUL_CODE, NUM_NODE(-1), OPER_NODE(SIN_CODE, _C(_LEFT))), _D(_LEFT))
-#define _TAN(node) OPER_NODE(MUL_CODE, OPER_NODE(DIV_CODE, NUM_NODE(1), OPER_NODE(STEPEN_CODE, OPER_NODE(COS_CODE, _C(_LEFT)), NUM_NODE(2))), _D(_LEFT))
-#define _COTAN(node) OPER_NODE(MUL_CODE, OPER_NODE(DIV_CODE, NUM_NODE(-1), OPER_NODE(STEPEN_CODE, OPER_NODE(SIN_CODE, _C(_LEFT)), NUM_NODE(2))), _D(_LEFT))
-#define _ARCSIN(node) OPER_NODE(MUL_CODE, OPER_NODE(DIV_CODE, NUM_NODE(1), OPER_NODE(STEPEN_CODE, OPER_NODE(SUB_CODE, NUM_NODE(1), OPER_NODE(STEPEN_CODE, _C(_LEFT), NUM_NODE(2))), NUM_NODE(0.5))), _D(_LEFT))
-#define _ARCCOS(node) OPER_NODE(MUL_CODE, OPER_NODE(DIV_CODE, NUM_NODE(-1), OPER_NODE(STEPEN_CODE, OPER_NODE(SUB_CODE, NUM_NODE(1), OPER_NODE(STEPEN_CODE, _C(_LEFT), NUM_NODE(2))), NUM_NODE(0.5))), _D(_LEFT))
-#define _ARCTAN(node) OPER_NODE(MUL_CODE, OPER_NODE(DIV_CODE, NUM_NODE(1), OPER_NODE(ADD_CODE, NUM_NODE(1), OPER_NODE(STEPEN_CODE, _C(_LEFT), NUM_NODE(2)))), _D(_LEFT))
-#define _ARCCOTAN(node) OPER_NODE(MUL_CODE, OPER_NODE(DIV_CODE, NUM_NODE(-1), OPER_NODE(ADD_CODE, NUM_NODE(1), OPER_NODE(STEPEN_CODE, _C(_LEFT), NUM_NODE(2)))), _D(_LEFT))
-#define _LN(node) OPER_NODE(MUL_CODE, OPER_NODE(DIV_CODE, NUM_NODE(1), _C(_LEFT)), _D(_LEFT))
 
 differentiator_t Differenciator(differentiator_t tree)
 {
@@ -40,15 +19,9 @@ differentiator_t Differenciator(differentiator_t tree)
 Node_t* Proc_Differing(Node_t* node)
 {
     if (node->type == NUM_CODE)
-    {
-        value_dif a = {.num_t = 0};
-        return Make_Node(NUM_CODE, a);
-    }
+        return Make_Node(NUM_CODE, {.num_t = 0});
     else if (node->type == VAR_CODE)
-    {
-        value_dif a = {.num_t = 1};
-        return Make_Node(NUM_CODE, a);
-    }
+        return Make_Node(NUM_CODE, {.num_t = 1});
     else
     {
         switch(node->value.op_code_t)
@@ -87,4 +60,51 @@ Node_t* Proc_Copying(Node_t* node)
         new_node->right = Proc_Copying(node->right);
 
     return new_node;
+}
+
+#define IF_CAN_OPTIMYZED_WITH_RETURN_ONLY_VALUE(func_code, number)                                                              \
+if (node->value.op_code_t == func_code && (node->left->type == NUM_CODE && Is_Zero(node->left->value.num_t)))                    \
+{                                                                                                                               \
+    if (node->parent != NULL)                                                                                                   \
+    {                                                                                                                           \
+        if (node->parent->left == node)                                                                                         \
+            node->parent->left = node->right;                                                                                   \
+        else                                                                                                                    \
+            node->parent->right = node->right;                                                                                  \
+        node->right = NULL;                                                                                                     \
+        Tree_Destructor(node);                                                                                                  \
+    }                                                                                                                           \
+    else                                                                                                                        \
+        node = node->right;                                                                                                     \
+}                                                                                                                               \
+else if (node->value.op_code_t == func_code && (node->right->type == NUM_CODE && Is_Zero(node->right->value.num_t)))            \
+{                                                                                                                               \
+    if (node->parent != NULL)                                                                                                   \
+    {                                                                                                                           \
+        if (node->parent->left == node)                                                                                         \
+            node->parent->left = node->left;                                                                                    \
+        else                                                                                                                    \
+            node->parent->right = node->left;                                                                                   \
+        node->left = NULL;                                                                                                      \
+        Tree_Destructor(node);                                                                                                  \
+    }                                                                                                                           \
+    else                                                                                                                        \
+    {                                                                                                                           \
+        node = node->left;                                                                                                      \
+        node->parent->left = NULL;                                                                                              \
+        Tree_Destructor(node);                                                                                                  \
+    }                                                                                                                           \
+}
+
+void Proc_Optymizing(Node_t* node)
+{
+    if (node->type == OPER_CODE)
+    {
+        if (node->left != NULL)
+            Proc_Optymizing(node->left);
+        if (node->right != NULL)
+            Proc_Optymizing(node->right);
+
+        IF_CAN_OPTIMYZED_WITH_RETURN_ONLY_VALUE(ADD_CODE, 0)
+    }
 }

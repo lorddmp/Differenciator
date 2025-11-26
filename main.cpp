@@ -25,16 +25,18 @@ int main()
 
     printf("Tree was read successfully\n");
 
-    Calculate(&tree, tree.root_node, &err);
-    differentiator_t tree_diff = Differenciator(tree);
+    // Calculate(&tree, tree.root_node, &err);
+    // differentiator_t tree_diff = Differenciator(tree);
+    // Calculate(&tree_diff, tree_diff.root_node, &err);
 
     // double result = Count_Calculator(&tree, &err);
     // printf("%lg", result);
+    Proc_Optymizing(tree.root_node);
 
-    Print_Tree(tree_diff.root_node);
+    Print_Tree(tree.root_node);
 
     Tree_Destructor(tree.root_node);
-    Tree_Destructor(tree_diff.root_node);
+    // Tree_Destructor(tree_diff.root_node);
     free(tree.hash_table);
     return 0;
 }
