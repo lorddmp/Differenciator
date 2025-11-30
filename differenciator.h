@@ -5,10 +5,6 @@
 
 differentiator_t Differenciator(differentiator_t tree);
 
-Node_t* Proc_Differing(Node_t* node);
-
-Node_t* Proc_Copying(Node_t* node);
-
 void Proc_Optymizing(Node_t** node);
 
 #endif

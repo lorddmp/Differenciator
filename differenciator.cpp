@@ -4,6 +4,10 @@
 #include <stdio.h>
 #include <assert.h>
 
+Node_t* Proc_Differing(Node_t* node);
+
+Node_t* Proc_Copying(Node_t* node);
+
 
 differentiator_t Differenciator(differentiator_t tree)
 {
@@ -63,9 +67,9 @@ Node_t* Proc_Copying(Node_t* node)
 }
 
 
-#define IF_CAN_OPTIMYZED_WITH_RETURN_VALUE(func_code, number, sides)                                                                                        \
-if ((*node)->value.op_code_t == func_code && ((*node)->left->type == NUM_CODE && Is_Zero((*node)->left->value.num_t - number)))                             \
-{                                                                                                                                                            \
+#define IF_CAN_OPTIMYZED_WITH_RETURN_VALUE(func_code, number, node_where_number)                                                                            \
+if ((*node)->value.op_code_t == func_code && (*node)->left->type == NUM_CODE && Is_Zero((*node)->left->value.num_t - number) && node_where_number != 'r')   \
+{                                                                                                                                                           \
     if ((*node)->parent != NULL)                                                                                                                            \
     {                                                                                                                                                       \
         if ((*node)->parent->left == (*node))                                                                                                               \
@@ -78,8 +82,8 @@ if ((*node)->value.op_code_t == func_code && ((*node)->left->type == NUM_CODE &&
     else                                                                                                                                                    \
         (*node) = (*node)->right;                                                                                                                           \
 }                                                                                                                                                           \
-else if ((*node)->value.op_code_t == func_code && ((*node)->right->type == NUM_CODE && Is_Zero((*node)->right->value.num_t - number)) && sides == 2)        \
-{                                                                                                                                                            \
+else if ((*node)->value.op_code_t == func_code && (*node)->right->type == NUM_CODE && Is_Zero((*node)->right->value.num_t - number) && node_where_number != 'l')     \
+{                                                                                                                                                           \
     if ((*node)->parent != NULL)                                                                                                                            \
     {                                                                                                                                                       \
         if ((*node)->parent->left == (*node))                                                                                                               \
@@ -90,13 +94,13 @@ else if ((*node)->value.op_code_t == func_code && ((*node)->right->type == NUM_C
         Tree_Destructor((*node));                                                                                                                           \
     }                                                                                                                                                       \
     else                                                                                                                                                    \
-    {                                                                                                                                                       \
         (*node) = (*node)->left;                                                                                                                            \
-    }                                                                                                                                                       \
 }
 
-#define IF_CAN_OPTIMYZED_WITH_RETURN_NUM(func_code, number, returnable_num, sides)                                                                          \
-else if ((*node)->value.op_code_t == func_code && ((*node)->left->type == NUM_CODE && Is_Zero((*node)->left->value.num_t - number)))                             \
+#define IF_CAN_OPTIMYZED_WITH_RETURN_NUM(func_code, number, returnable_num, node_where_number)                                                              \
+else if ((*node)->value.op_code_t == func_code &&                                                                   \
+(((*node)->left->type == NUM_CODE && Is_Zero((*node)->left->value.num_t - number) && node_where_number != 'r') ||   \
+((*node)->right->type == NUM_CODE && Is_Zero((*node)->right->value.num_t - number) && node_where_number != 'l')))      \
 {                                                                                                                                                           \
     (*node)->type = NUM_CODE;                                                                                                                               \
     (*node)->value.num_t = returnable_num;                                                                                                                  \
@@ -105,15 +109,6 @@ else if ((*node)->value.op_code_t == func_code && ((*node)->left->type == NUM_CO
     Tree_Destructor((*node)->right);                                                                                                                        \
     (*node)->right = NULL;                                                                                                                                  \
 }                                                                                                                                                           \
-else if ((*node)->value.op_code_t == func_code && ((*node)->right->type == NUM_CODE && Is_Zero((*node)->right->value.num_t - number)) && sides == 2)        \
-{                                                                                                                                                           \
-    (*node)->type = NUM_CODE;                                                                                                                               \
-    (*node)->value.num_t = returnable_num;                                                                                                                  \
-    Tree_Destructor((*node)->left);                                                                                                                         \
-    (*node)->left = NULL;                                                                                                                                   \
-    Tree_Destructor((*node)->right);                                                                                                                        \
-    (*node)->right = NULL;                                                                                                                                  \
-}
 
 void Proc_Optymizing(Node_t** node)
 {
@@ -124,12 +119,14 @@ void Proc_Optymizing(Node_t** node)
         if ((*node)->right != NULL)
             Proc_Optymizing(&(*node)->right);
         
-        IF_CAN_OPTIMYZED_WITH_RETURN_VALUE(ADD_CODE, 0, 2)
-        IF_CAN_OPTIMYZED_WITH_RETURN_VALUE(SUB_CODE, 0, 2)
-        IF_CAN_OPTIMYZED_WITH_RETURN_VALUE(MUL_CODE, 1, 2)
-        IF_CAN_OPTIMYZED_WITH_RETURN_VALUE(DIV_CODE, 1, 1)
-        IF_CAN_OPTIMYZED_WITH_RETURN_VALUE(STEPEN_CODE, 1, 1)
-        IF_CAN_OPTIMYZED_WITH_RETURN_NUM(MUL_CODE, 0, 0, 2)
-        IF_CAN_OPTIMYZED_WITH_RETURN_NUM(DIV_CODE, 0, 0, 1)
+        IF_CAN_OPTIMYZED_WITH_RETURN_VALUE(ADD_CODE, 0, 'b')
+        IF_CAN_OPTIMYZED_WITH_RETURN_VALUE(SUB_CODE, 0, 'b')
+        IF_CAN_OPTIMYZED_WITH_RETURN_VALUE(MUL_CODE, 1, 'b')
+        IF_CAN_OPTIMYZED_WITH_RETURN_VALUE(DIV_CODE, 1, 'r')
+        IF_CAN_OPTIMYZED_WITH_RETURN_VALUE(STEPEN_CODE, 1, 'r')
+        IF_CAN_OPTIMYZED_WITH_RETURN_NUM(MUL_CODE, 0, 0, 'b')
+        IF_CAN_OPTIMYZED_WITH_RETURN_NUM(DIV_CODE, 0, 0, 'l')
+        IF_CAN_OPTIMYZED_WITH_RETURN_NUM(STEPEN_CODE, 0, 1, 'r')
+        IF_CAN_OPTIMYZED_WITH_RETURN_NUM(STEPEN_CODE, 1, 1, 'l')
     }
 }

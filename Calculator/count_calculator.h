@@ -5,8 +5,6 @@
 
 double Count_Calculator(differentiator_t* tree, errors* err);
 
-void Get_Var_Values(differentiator_t* tree);
-
 double Proc_Count_Calculating(differentiator_t* tree, Node_t* node, errors* err);
 
 #endif

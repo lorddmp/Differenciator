@@ -15,7 +15,7 @@ do {                                                                            
 } while (0)
 
 struct hash {
-    char name[5];
+    char name[10];
     int hash_len;
     int index;
     double var_value;
